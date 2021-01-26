@@ -8,6 +8,7 @@
 #include <map>
 #include <assert.h>
 #include <sstream>
+#include <cmath>
 
 #include <windows.h>
 #include <d3d11.h>       // D3D interface
@@ -26,6 +27,10 @@
 // classes
 class Engine;
 class Scene;
+class Camera;
+
+// structs
+struct PysicsVector3D;
 
 /*///////////////////////
 * Graphics class
@@ -71,6 +76,8 @@ private:
 	Graphics* graphics;
 	Scene* activeScene;
 	std::map <const char*, Scene*>* scenes;
+	Camera* activeCamera;
+	std::map <const char*, Camera*>* cameras;
 public:
 	Engine();
 	Engine(Graphics * gra);
@@ -80,6 +87,12 @@ public:
 	void addScene(Scene* scene);
 	void removeScene(Scene* scene);
 	void removeScene(std::string name);
+	Camera* getActiveCamera();
+	Camera* getCamera(std::string name);
+	void setActiveCamera(Camera* camera);
+	void addCamera(Camera* camera);
+	void removeCamera(Camera* camera);
+	void removeCamera(std::string name);
 	Graphics* getGraphics();
 };
 
@@ -91,8 +104,8 @@ class GameObject {
 private: 
 	ObjModel * model;
 	double * loc;
-	double * rot;
 	std::string name;
+	PysicsVector3D * vector;
 public:
 	GameObject();
 	GameObject(std::string name);
@@ -104,24 +117,18 @@ public:
 	ObjModel* getObjModel();
 
 	//location and rotation
-	void setRotation(double* rotation);
 	void setLocation(double* location);
-
-	void setRotationX(double x);
-	void setRotationY(double y);
-	void setRotationZ(double z);
 
 	void setLocationX(double x);
 	void setLocationY(double y);
 	void setLocationZ(double z);
 
-	double getRotationX();
-	double getRotationY();
-	double getRotationZ();
-
 	double getLocationX();
 	double getLocationY();
 	double getLocationZ();
+
+	PysicsVector3D* getPysicsVector3D();
+	void setPysicsVector3D(PysicsVector3D * vector);
 };
 
 /*///////////////////////
@@ -153,4 +160,53 @@ struct Vertex {
 
 	DirectX::XMFLOAT3 pos;
 	DirectX::XMFLOAT4 color;
+};
+
+/*///////////////////////
+* FysicsVector3D
+*////////////////////////
+
+struct PysicsVector3D {
+private:
+	double x, y, z;
+public:
+	PysicsVector3D();
+	PysicsVector3D(double x, double y, double z);
+	void normalize();
+	void multiply(double amount);
+	PysicsVector3D getDirectionalVector();
+	double lenght();
+	double getX();
+	double getY();
+	double getZ();
+};
+
+/*///////////////////////
+* Camera
+*////////////////////////
+
+class Camera {
+private:
+	std::string name;
+	double* loc;
+	PysicsVector3D * vector;
+public:
+	Camera();
+	Camera(std::string name);
+
+	std::string getName();
+
+	//location and rotation
+	void setLocation(double* location);
+
+	void setLocationX(double x);
+	void setLocationY(double y);
+	void setLocationZ(double z);
+
+	double getLocationX();
+	double getLocationY();
+	double getLocationZ();
+
+	PysicsVector3D* getPysicsVector3D();
+	void setPysicsVector3D(PysicsVector3D * vector);
 };

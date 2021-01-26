@@ -9,6 +9,8 @@ Engine::Engine() {
 	graphics = nullptr;
 	activeScene = NULL;
 	scenes = new std::map<const char*, Scene*>();
+	activeCamera = NULL;
+	cameras = new std::map<const char*, Camera*>();
 }
 
 Engine::Engine(Graphics * gra) {
@@ -16,6 +18,8 @@ Engine::Engine(Graphics * gra) {
 	graphics = gra;
 	activeScene = NULL;
 	scenes = new std::map<const char*, Scene*>();
+	activeCamera = NULL;
+	cameras = new std::map<const char*, Camera*>();
 }
 
 // get graphics component
@@ -47,6 +51,32 @@ void Engine::removeScene(Scene* scene) {
 
 void Engine::removeScene(std::string name) {
 	scenes->erase(name.c_str());
+}
+
+// modify cameras
+Camera* Engine::getActiveCamera() {
+	return activeCamera;
+}
+
+Camera* Engine::getCamera(std::string name) {
+	if (cameras->find(name.c_str()) != cameras->end()) return cameras->at(name.c_str());
+	else return NULL;
+}
+
+void Engine::setActiveCamera(Camera* camera) {
+	activeCamera = camera;
+}
+
+void Engine::addCamera(Camera* camera) {
+	if (cameras->find(camera->getName().c_str()) == cameras->end()) cameras->insert({ camera->getName().c_str(), camera });
+}
+
+void Engine::removeCamera(Camera* camera) {
+	cameras->erase(camera->getName().c_str());
+}
+
+void Engine::removeCamera(std::string name) {
+	cameras->erase(name.c_str());
 }
 
 /*///////////////////////////////

@@ -5,6 +5,10 @@
 *///////////////////////
 
 void onEnable(Engine * engine) {
+	//create test camera
+	Camera* camera = new Camera("test_camera");
+	engine->addCamera(camera);
+	engine->setActiveCamera(camera);
 
 	//test scene
 	Scene * scene = new Scene("test_scene");
